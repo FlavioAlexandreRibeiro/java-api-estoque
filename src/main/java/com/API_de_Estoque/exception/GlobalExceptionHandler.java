@@ -11,36 +11,87 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EstoqueInsuficienteException.class)
-    public ResponseEntity<ErroResponse> tratarEstoqueInsuficiente(
-            EstoqueInsuficienteException exception) {
+    @ExceptionHandler(EstoqueJaExisteException.class)
+    public ResponseEntity<ErroResponse> tratarEstoqueJaExiste(
+            EstoqueJaExisteException exception) {
 
         ErroResponse erro = new ErroResponse(
                 LocalDateTime.now(),
-                HttpStatus.BAD_REQUEST.value(),
-                "Estoque insuficiente",
+                HttpStatus.CONFLICT.value(),
+                "Estoque já existe",
                 exception.getMessage()
         );
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(HttpStatus.CONFLICT)
                 .body(erro);
     }
 
 
-    @ExceptionHandler(RecursoNaoEncontradoException.class)
-    public ResponseEntity<ErroResponse> tratarRecursoNaoEncontrado(
-            RecursoNaoEncontradoException exception) {
+    @ExceptionHandler(EstoqueNaoEncontradoException.class)
+    public ResponseEntity<ErroResponse> tratarEstoqueNaoEncontrado(
+            EstoqueNaoEncontradoException exception) {
 
         ErroResponse erro = new ErroResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                "Recurso não encontrado",
+                "Estoque não encontrado",
                 exception.getMessage()
         );
 
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(erro);
+    }
+
+
+    @ExceptionHandler(ProdutoJaCadastradoException.class)
+    public ResponseEntity<ErroResponse> tratarProdutoJaCadastrado(
+            ProdutoJaCadastradoException exception) {
+
+        ErroResponse erro = new ErroResponse(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Produto já cadastrado",
+                exception.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(erro);
+    }
+
+
+    @ExceptionHandler(ProdutoNaoEncontradoException.class)
+    public ResponseEntity<ErroResponse> tratarProdutoNaoEncontrado(
+            ProdutoNaoEncontradoException exception) {
+
+        ErroResponse erro = new ErroResponse(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Produto não encontrado",
+                exception.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(erro);
+    }
+
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErroResponse> tratarErroGenerico(
+            Exception exception) {
+
+        ErroResponse erro = new ErroResponse(
+                LocalDateTime.now(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Erro interno do servidor",
+                "Ocorreu um erro inesperado. Tente novamente mais tarde."
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(erro);
     }
 
