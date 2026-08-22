@@ -12,7 +12,4 @@ public interface EstoqueRepository extends JpaRepository<Estoque, Long>,
 
     Optional<Estoque> findByProdutoId(Long produtoId);
 
-    List<Estoque> findByQuantidadeLessThan(Integer quantidade);
-
-    List<Estoque> findByQuantidadeBetween(Integer min, Integer max);
 }
