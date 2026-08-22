@@ -9,7 +9,8 @@ public record ProdutoResponseDTO(
         Long id,
         String nome,
         String descricao,
-        BigDecimal preco
+        BigDecimal preco,
+        Boolean ativo
 
 ) {
 
@@ -18,7 +19,8 @@ public record ProdutoResponseDTO(
                 produto.getId(),
                 produto.getNome(),
                 produto.getDescricao(),
-                produto.getPreco()
+                produto.getPreco(),
+                produto.isAtivo()
         );
     }
 }
