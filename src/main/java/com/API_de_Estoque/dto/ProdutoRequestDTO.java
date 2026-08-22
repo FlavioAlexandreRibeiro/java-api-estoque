@@ -22,4 +22,7 @@ public class ProdutoRequestDTO {
     @NotNull(message = "O preço do produto não pode ser nulo")
     @Positive(message = "O preço do produto deve ser positivo")
     private Double preco;
+
+    @NotNull(message = "O status do produto não pode ser nulo")
+    private Boolean ativo;
 }
