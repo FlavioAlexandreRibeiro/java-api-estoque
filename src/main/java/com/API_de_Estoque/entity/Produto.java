@@ -4,6 +4,8 @@ package com.API_de_Estoque.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 
 @Entity
 @Table(name = "produto")
@@ -27,7 +29,7 @@ public class Produto {
     private String descricao;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private Double preco;
+    private BigDecimal preco;
 
     @Column(nullable = false)
     private boolean ativo;

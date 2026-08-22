@@ -2,12 +2,14 @@ package com.API_de_Estoque.dto;
 
 import com.API_de_Estoque.entity.Produto;
 
+import java.math.BigDecimal;
+
 public record ProdutoResponseDTO(
 
         Long id,
         String nome,
         String descricao,
-        Double preco
+        BigDecimal preco
 
 ) {
 

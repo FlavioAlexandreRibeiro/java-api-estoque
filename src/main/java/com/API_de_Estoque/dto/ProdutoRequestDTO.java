@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 public class ProdutoRequestDTO {
@@ -21,7 +23,7 @@ public class ProdutoRequestDTO {
 
     @NotNull(message = "O preço do produto não pode ser nulo")
     @Positive(message = "O preço do produto deve ser positivo")
-    private Double preco;
+    private BigDecimal preco;
 
     @NotNull(message = "O status do produto não pode ser nulo")
     private Boolean ativo;
