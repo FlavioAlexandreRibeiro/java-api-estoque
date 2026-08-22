@@ -34,7 +34,7 @@ public class EstoqueController {
         return ResponseEntity.ok(estoqueService.entrada(produtoId, dto));
     }
 
-    @PostMapping("/{produtoId}/saida/")
+    @PostMapping("/{produtoId}/saida")
     public ResponseEntity<EstoqueResponseDTO> saida(
             @PathVariable Long produtoId,
             @Valid @RequestBody MovimentacaoEstoqueRequestDTO dto) {
