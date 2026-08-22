@@ -3,11 +3,10 @@ package com.API_de_Estoque.service;
 
 import com.API_de_Estoque.dto.EstoqueRequestDTO;
 import com.API_de_Estoque.dto.EstoqueResponseDTO;
+import com.API_de_Estoque.dto.MovimentacaoEstoqueRequestDTO;
 import com.API_de_Estoque.entity.Estoque;
 import com.API_de_Estoque.entity.Produto;
-import com.API_de_Estoque.exception.EstoqueJaExisteException;
-import com.API_de_Estoque.exception.EstoqueNaoEncontradoException;
-import com.API_de_Estoque.exception.ProdutoNaoEncontradoException;
+import com.API_de_Estoque.exception.*;
 import com.API_de_Estoque.repository.EstoqueRepository;
 import com.API_de_Estoque.repository.ProdutoRepository;
 import com.API_de_Estoque.specification.EstoqueSpecification;
@@ -94,13 +93,8 @@ public class EstoqueService {
                 .orElseThrow(() -> new EstoqueNaoEncontradoException(
                         "Estoque não encontrado com ID: " + id));
 
-        Produto produto = produtoRepository.findById(estoqueDto.getProdutoId())
-                .orElseThrow(()-> new ProdutoNaoEncontradoException(
-                        "Produto não encontrado com ID: " + estoqueDto.getProdutoId()));
-
         estoque.setQuantidade(estoqueDto.getQuantidade());
         estoque.setEstoqueMinimo(estoqueDto.getEstoqueMinimo());
-        estoque.setProduto(produto);
 
         Estoque estoqueAtualizado = estoqueRepository.save(estoque);
 
@@ -115,5 +109,79 @@ public class EstoqueService {
             throw new EstoqueNaoEncontradoException("Estoque não encontrado com ID: " + id);
         }
         estoqueRepository.deleteById(id);
+    }
+
+
+    @Transactional
+    public EstoqueResponseDTO entrada(
+            Long produtoId,
+            MovimentacaoEstoqueRequestDTO dto) {
+
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() ->
+                        new ProdutoNaoEncontradoException(
+                                "Produto não encontrado com ID: " + produtoId
+                        ));
+
+        if (!produto.isAtivo()) {
+            throw new ProdutoInativoException(
+                    "Produto inativo não pode receber entrada"
+            );
+        }
+
+        Estoque estoque = estoqueRepository.findByProdutoId(produtoId)
+                .orElseThrow(() ->
+                        new EstoqueNaoEncontradoException(
+                                "Estoque não encontrado para o produto com ID: "
+                                        + produtoId
+                        ));
+
+        estoque.setQuantidade(
+                estoque.getQuantidade() + dto.getQuantidade()
+        );
+
+        Estoque estoqueAtualizado = estoqueRepository.save(estoque);
+
+        return EstoqueResponseDTO.mapearParaDto(estoqueAtualizado);
+    }
+
+
+    @Transactional
+    public EstoqueResponseDTO saida(
+            Long produtoId,
+            MovimentacaoEstoqueRequestDTO dto) {
+
+        Produto produto = produtoRepository.findById(produtoId)
+                .orElseThrow(() ->
+                        new ProdutoNaoEncontradoException(
+                                "Produto não encontrado com ID: " + produtoId
+                        ));
+
+        if (!produto.isAtivo()) {
+            throw new ProdutoInativoException(
+                    "Produto inativo não pode receber saída"
+            );
+        }
+
+        Estoque estoque = estoqueRepository.findByProdutoId(produtoId)
+                .orElseThrow(() ->
+                        new EstoqueNaoEncontradoException(
+                                "Estoque não encontrado para o produto com ID: "
+                                        + produtoId
+                        ));
+
+        if (dto.getQuantidade() > estoque.getQuantidade()) {
+            throw new EstoqueInsuficienteException(
+                    "Quantidade de saída maior que o estoque disponível"
+            );
+        }
+
+        estoque.setQuantidade(
+                estoque.getQuantidade() - dto.getQuantidade()
+        );
+
+        Estoque estoqueAtualizado = estoqueRepository.save(estoque);
+
+        return EstoqueResponseDTO.mapearParaDto(estoqueAtualizado);
     }
 }
