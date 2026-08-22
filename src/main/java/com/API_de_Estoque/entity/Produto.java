@@ -29,6 +29,11 @@ public class Produto {
     @Column(nullable = false, precision = 10, scale = 2)
     private Double preco;
 
+    @Column(nullable = false)
+    private boolean ativo;
+
     @OneToOne(mappedBy = "produto", cascade = CascadeType.ALL, orphanRemoval = true)
     private Estoque estoque;
+
+
 }
