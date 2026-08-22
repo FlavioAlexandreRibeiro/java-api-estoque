@@ -31,6 +31,7 @@ public class ProdutoService {
         produto.setNome(produtoDto.getNome());
         produto.setDescricao(produtoDto.getDescricao());
         produto.setPreco(produtoDto.getPreco());
+        produto.setAtivo(produtoDto.getAtivo());
 
         Produto produtoSalvo = produtoRepository.save(produto);
 
@@ -59,16 +60,17 @@ public class ProdutoService {
     public ProdutoResponseDTO atualizar(Long id, ProdutoRequestDTO produtoDto) {
 
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(()-> new ProdutoNaoEncontradoException("Produto não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado com o ID: " + id));
 
         if (!produto.getNome().equals(produtoDto.getNome())
-            && produtoRepository.existsByNome(produtoDto.getNome())) {
+                && produtoRepository.existsByNome(produtoDto.getNome())) {
             throw new ProdutoJaCadastradoException("Produto já cadastrado");
         }
 
-                produto.setNome(produtoDto.getNome());
-                produto.setDescricao(produtoDto.getDescricao());
-                produto.setPreco(produtoDto.getPreco());
+        produto.setNome(produtoDto.getNome());
+        produto.setDescricao(produtoDto.getDescricao());
+        produto.setPreco(produtoDto.getPreco());
+        produto.setAtivo(produtoDto.getAtivo());
 
         Produto produtoAtualizado = produtoRepository.save(produto);
 
